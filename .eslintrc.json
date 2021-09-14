@@ -5,9 +5,9 @@
         "node": true
     },
     "extends": [
-        "plugin:react/recommended",
         "airbnb",
         "plugin:jsx-a11y/recommended",
+        "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "prettier"
     ],
@@ -191,6 +191,7 @@
         "react/jsx-uses-vars": 2,
         "react/no-did-mount-set-state": 2,
         "react/no-did-update-set-state": 2,
+        "react/jsx-props-no-spreading": 0,
         "react/no-multi-comp": 0,
         "react/no-unknown-property": 2,
         "react/prop-types": 0,
