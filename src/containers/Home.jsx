@@ -5,12 +5,13 @@ import Search from '../components/Search';
 import Carousel from '../components/Carousel';
 import initialState from '../utils/intitalState';
 import CarouselItem from '../components/CarouselItem';
+import Footer from '../components/Footer';
 
 const Home = () => {
   console.log(initialState.trends);
   return (
     <>
-      <Header />
+      <Header isHome="isHome" />
       <Search />
       <Categories title="My favorites">
         <Carousel>
@@ -33,6 +34,7 @@ const Home = () => {
           ))}
         </Carousel>
       </Categories>
+      <Footer isHome="isHome" />
     </>
   );
 };

@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import user from '../assets/static/user-icon.png';
 import '../assets/styles/components/Header.scss';
+import obj from '../utils/dinamicComponent';
 
-const Header = () => {
+const Header = ({ isLogin, isRegister, isHome }) => {
+  useEffect(() => {
+    const h = document.querySelector('.header');
+    obj[isLogin || isRegister || isHome](h);
+  }, []);
   return (
     <>
       <header className="header">
@@ -14,7 +20,7 @@ const Header = () => {
           </div>
           <ul>
             <li>
-              <a href="/">Cuenta</a>
+              <Link to="/login">Cuenta</Link>
             </li>
             <li>
               <a href="/">Cerrar Sesión</a>
