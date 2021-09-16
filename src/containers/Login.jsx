@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
 import '../assets/styles/components/Login.scss';
 import googleIcon from '../assets/static/google-icon.png';
 import twitterIcon from '../assets/static/twitter-icon.png';
 import Footer from '../components/Footer';
+import { signIn } from '../actions';
 
-const Login = (props) => {
-  const handleInput = (event) => {};
+const Login = ({ signIn, history, user }) => {
+  const [form, setform] = useState({ email: '', password: '' });
+  const handleInput = (e) => {
+    setform({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const handleSubmit = (event) => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    signIn(form, history);
+  };
 
   return (
     <>
@@ -19,6 +30,7 @@ const Login = (props) => {
           <h2>Inicia sesión</h2>
           <form className="login__container--form" onSubmit={handleSubmit}>
             <input
+              required={true}
               name="email"
               className="input"
               type="text"
@@ -26,13 +38,14 @@ const Login = (props) => {
               onChange={handleInput}
             />
             <input
+              required={true}
               name="password"
               className="input"
               type="password"
               placeholder="Contraseña"
               onChange={handleInput}
             />
-            <button className="button" type="button">
+            <button className="button" type="submit">
               Iniciar sesión
             </button>
             <div className="login__container--remember-me">
@@ -62,4 +75,7 @@ const Login = (props) => {
     </>
   );
 };
-export default Login;
+
+export default connect((state) => ({ user: state.user.login }), { signIn })(
+  Login
+);

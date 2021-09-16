@@ -24,21 +24,31 @@
   display: flex;
   flex-direction: column;
 }
-
-.login__container--form label {
-  font-size: 14px;
+.login__container h2{
+  text-align: center;
 }
-
+.login__container--form input{
+  width: 100%;
+}
+.login__container--form label {
+  font-size: 13px;
+}
+.login__container--remember-me input{
+  width: auto;
+  height: 10px;
+}
 .login__container--remember-me {
   color: white;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .login__container--remember-me a {
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   text-decoration: none;
 }
 

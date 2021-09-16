@@ -1,5 +1,6 @@
 const initialState = {
-  mylist: [
+  user: { login: '', register: '' },
+  myList: [
     {
       id: 8,
       slug: 'tvshow-8',

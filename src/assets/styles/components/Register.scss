@@ -19,7 +19,9 @@
   justify-content: space-around;
   padding: 60px 68px 40px;
 }
-
+.register__container h2{
+text-align: center;
+}
 .register__container--form {
   display: flex;
   flex-direction: column;
@@ -31,7 +33,9 @@
   text-align: center;
   text-decoration: none;
 }
-
+.register__container--form input{
+  width: 100%;
+}
 .register__container a:hover {
   text-decoration: underline;
 }

@@ -1,9 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import playIcon from '../assets/static/play-icon.png';
 import plusIcon from '../assets/static/plus-icon.png';
 import removeIcon from '../assets/static/remove-icon.png';
 import '../assets/styles/components/CarouselItem.scss';
+import { setFavorite, deleteFavorite } from '../actions';
 
 const CarouselItem = ({
   id,
@@ -13,9 +15,19 @@ const CarouselItem = ({
   duration,
   title,
   isList,
+  setFavorite,
+  deleteFavorite,
 }) => {
-  const handleSetFavorite = () => {};
-  const handleDeleteFavorite = () => {};
+  const handleSetFavorite = (e) => {
+    setFavorite({ movie: { id, cover, year, contentRating, duration, title } });
+    const image = document.getElementById(id);
+    image.style.display = 'none';
+  };
+  const handleDeleteFavorite = () => {
+    deleteFavorite({ id });
+    const image = document.getElementById(id);
+    image.style.display = 'inline-block';
+  };
   return (
     <div className="carousel-item">
       <img className="carousel-item__img" src={cover} alt={title} />
@@ -37,9 +49,10 @@ const CarouselItem = ({
             />
           ) : (
             <img
+              id={id}
               onClick={handleSetFavorite}
               src={plusIcon}
-              alt="Remove Icon"
+              alt=""
               className="carousel-item__details--img"
             />
           )}
@@ -53,4 +66,7 @@ const CarouselItem = ({
   );
 };
 
-export default CarouselItem;
+export default connect(null, {
+  setFavorite,
+  deleteFavorite,
+})(CarouselItem);

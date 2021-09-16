@@ -1,29 +1,51 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import user from '../assets/static/user-icon.png';
+import { connect } from 'react-redux';
+import userIcon from '../assets/static/user-icon.png';
 import '../assets/styles/components/Header.scss';
 import obj from '../utils/dinamicComponent';
+import benturi from '../assets/static/Benturi.svg';
+import gravatar from '../utils/gravatar';
+import { signOut } from '../actions';
 
-const Header = ({ isLogin, isRegister, isHome }) => {
+const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
   useEffect(() => {
     const h = document.querySelector('.header');
     obj[isLogin || isRegister || isHome](h);
   }, []);
+  const handleOnClick = (e) => {
+    signOut({});
+  };
   return (
     <>
       <header className="header">
-        <img className="header__img" src="" alt="Benturi-Logo" />
+        <Link to="/">
+          <img className="header__img" src={benturi} alt="Benturi-Logo" />
+        </Link>
         <div className="header__menu">
           <div className="header__menu--profile">
-            <img src={user} alt="Usuario" />
+            <img
+              src={user.email ? gravatar(user.email) : userIcon}
+              alt="Usuario"
+            />
             <p>Perfil</p>
           </div>
           <ul>
             <li>
-              <Link to="/login">Cuenta</Link>
+              {user ? (
+                <Link to="/">{user.name}</Link>
+              ) : (
+                <Link to="/login">Sign in</Link>
+              )}
             </li>
             <li>
-              <a href="/">Cerrar Sesión</a>
+              {user ? (
+                <Link to="/" onClick={handleOnClick}>
+                  Sign out
+                </Link>
+              ) : (
+                <Link to="/register">Sign up</Link>
+              )}
             </li>
           </ul>
         </div>
@@ -31,5 +53,6 @@ const Header = ({ isLogin, isRegister, isHome }) => {
     </>
   );
 };
-
-export default Header;
+export default connect((state) => ({ user: state.user.login }), { signOut })(
+  Header
+);
