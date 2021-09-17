@@ -7,6 +7,7 @@ import googleIcon from '../assets/static/google-icon.png';
 import twitterIcon from '../assets/static/twitter-icon.png';
 import Footer from '../components/Footer';
 import { signIn } from '../actions';
+import formValidate from '../utils/formValidate';
 
 const Login = ({ signIn, history, user }) => {
   const [form, setform] = useState({ email: '', password: '' });
@@ -19,7 +20,13 @@ const Login = ({ signIn, history, user }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    signIn(form, history);
+    formValidate(form, (err, isData)=>{
+      if(isData){
+        signIn(isData, history);
+        return true
+      }
+      window.alert(err.message)
+    })
   };
 
   return (

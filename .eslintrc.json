@@ -184,6 +184,7 @@
         "react/jsx-indent-props": [2, 2],
         "react/jsx-no-bind": [2, { "allowArrowFunctions": true }],
         "react/jsx-no-undef": 2,
+        "no-useless-escape": "",
         "react/jsx-pascal-case": 2,
         "react/jsx-sort-prop-types": 0,
         "react/jsx-sort-props": 0,

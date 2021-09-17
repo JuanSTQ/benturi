@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { signUp } from '../actions';
+import formValidate from '../utils/formValidate';
 
 const Register = ({ signUp, history }) => {
   const [form, setform] = useState({ email: '', password: '', name: '' });
@@ -14,11 +15,17 @@ const Register = ({ signUp, history }) => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleOnSubmit = (e) => {
-    /* Implementar la validacion de formularios */
     e.preventDefault();
-    signUp(form);
-    history.push('/login');
+    formValidate(form, (err, isData) => {
+      if (isData) {
+        signUp(form);
+        history.push('/login');
+        return true
+      }
+      window.alert(err.message);
+    });
   };
   return (
     <>
@@ -37,6 +44,7 @@ const Register = ({ signUp, history }) => {
             />
             <input
               name="email"
+              required={true}
               className="input"
               type="text"
               placeholder="Correo"
@@ -44,6 +52,7 @@ const Register = ({ signUp, history }) => {
             />
             <input
               name="password"
+              required={true}
               className="input"
               type="password"
               placeholder="Contraseña"

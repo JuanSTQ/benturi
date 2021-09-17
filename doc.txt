@@ -1,0 +1,15 @@
+NOMBRES: 
+EJEMPLO :
+Mathias d'Arras
+Martin Luther King hijo.
+Hector Sausage-Hausen
+
+EMAIL:
+
+CONTRASEñAS
+La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula y al menos una mayúscula.
+NO puede tener otros símbolos.
+Ejemplo: 
+s4Juan12456745
+w3Unpocodet0d0
+
