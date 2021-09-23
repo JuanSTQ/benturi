@@ -1,12 +1,16 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const dotenv = require('dotenv').config();
+const webpack = require('webpack');
+const dev = process.env.MODE === "development"
+const entry = ["./src/frontend/index.js"]
+dev && (entry.push('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'))
 module.exports = {
-  entry: './src/frontend/index.js',
+  mode: dev ? "development" : "production" ,
+  entry,
   output: {
     path: path.resolve(__dirname, 'src/server/dist'),
-    filename: 'bundle.js',
+    filename: 'assets/bundle.js',
     publicPath: '/',
   },
   resolve: {
@@ -19,12 +23,6 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-        },
-      },
-      {
-        test: /\.(html)$/,
-        use: {
-          loader: 'html-loader',
         },
       },
       {
@@ -45,17 +43,10 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-      filename: 'index.html',
-    }),
+    dev ? new webpack.HotModuleReplacementPlugin() : ()=>{},
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
     }),
   ],
-  devServer: {
-    port: 3002,
-    open: true,
-    historyApiFallback: true,
-  },
+  devServer: dev ? {historyApiFallback: true} : {},
 };
