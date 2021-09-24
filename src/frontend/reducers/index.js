@@ -18,27 +18,10 @@ const reducer = function (state, action) {
         user: { ...state.user, register: action.payload },
       };
     case 'LOGIN_USER':
-      if (
-        // eslint-disable-next-line operator-linebreak
-        state.user.register.email === action.payload.email &&
-        state.user.register.password === action.payload.password
-      ) {
-        action.history.push('/');
-        return {
-          ...state,
-          user: {
-            ...state.user,
-            login: {
-              email: action.payload.email,
-              password: action.payload.password,
-              name: state.user.register.name,
-            },
-          },
-        };
-      }
-      window.alert('Login Fail');
+      action.history.push('/');
       return {
         ...state,
+        user: action.payload
       };
     case 'SIGN_OUT':
       return {

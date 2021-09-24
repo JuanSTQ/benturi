@@ -5,7 +5,7 @@ import playIcon from '../assets/static/play-icon.png';
 import plusIcon from '../assets/static/plus-icon.png';
 import removeIcon from '../assets/static/remove-icon.png';
 import '../assets/styles/components/CarouselItem.scss';
-import { setFavorite, deleteFavorite } from '../actions';
+import { setFavorite, deleteFavorite } from '../actions/index';
 
 const CarouselItem = ({
   id,

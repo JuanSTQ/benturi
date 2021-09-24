@@ -32,7 +32,7 @@ const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
           </div>
           <ul>
             <li>
-              {user ? (
+              {user.name ? (
                 <Link to="/">{user.name}</Link>
               ) : (
                 <Link to="/login">Sign in</Link>
@@ -53,6 +53,6 @@ const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
     </>
   );
 };
-export default connect((state) => ({ user: state.user.login }), { signOut })(
+export default connect((state) => ({ user: state.user }), { signOut })(
   Header
 );

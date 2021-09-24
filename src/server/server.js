@@ -3,13 +3,14 @@ import React from 'react'
 import {createStore} from 'redux'
 import webpack  from 'webpack'
 import reducer from '../frontend/reducers/index'
-import initialState from '../frontend/utils/intitalState'
+//import initialState from '../frontend/utils/intitalState'
 import {StaticRouter} from 'react-router-dom' 
 import {renderToString} from 'react-dom/server'
 import { renderRoutes } from 'react-router-config'
 import { Provider } from 'react-redux'
 import serverRoutes from '../frontend/routes/serverRoutes'
 import helmet from 'helmet'
+import axios from 'axios'
 
 const app = express()
 const dotenv = require("dotenv").config()
@@ -62,7 +63,29 @@ const setResponse = (html, preloadedState, manifest) => {
 };
 
 
-const renderApp = (req,res,next)=>{
+const renderApp = async (req,res,next)=>{
+  const initialState = {
+    user: {email:"", name:"", id:""},
+    myList: [],
+    trends: [],
+    originals:[]
+  }
+  
+  let arr = await axios({
+    url:`${process.env.API_URL}/api/movies/`,
+    method: "get",
+  })
+  arr = arr.data
+  initialState.originals = arr.filter(({contentRating})=>{
+    return ["G", "NC-17", "R"].includes(contentRating)
+  })
+  initialState.trends = arr.filter(({contentRating})=>{
+    return ["PG", "PG-13"].includes(contentRating)
+  })
+  if(initialState.user.email){
+    console.log("ESTA DEFINIDA")
+  }
+  console.log("NO ESTA DEFINIDA")
   const store = createStore(reducer, initialState)
   const preloadedState = store.getState();
   const html = renderToString(
@@ -76,6 +99,58 @@ const renderApp = (req,res,next)=>{
   res.set("Content-Security-Policy", "img-src 'self' http://dummyimage.com; media-src *; style-src-elem 'self' https://fonts.googleapis.com;")
   res.send(setResponse(html, preloadedState, req.hashManifest)); //HTML es el prerenderizado
 }
+
+
+app.post("/auth/sign-in", async function(req, res, next) {
+  passport.authenticate("basic", function(error, data) {
+    try {
+      if (error || !data) {
+        next(boom.unauthorized());
+      }
+
+      req.login(data, { session: false }, async function(err) {
+        if (err) {
+          next(err);
+        }
+
+        const { token, ...user } = data;
+
+        res.cookie("token", token, {
+          httpOnly: !(process.env.MODE==='development'),
+          secure: !(process.env.MODE==="development")
+        });
+
+        res.status(200).json(user);
+      });
+    } catch (error) {
+      next(error);
+    }
+  })(req, res, next);
+});
+
+app.post("/auth/sign-up", async function(req, res, next) {
+  const { body: user } = req;
+  //console.log('PETICION ENCONTRADA', `${process.env.API_URL}`, user)
+  try {
+    const userCreated = await axios({
+      url: `${process.env.API_URL}/auth/sign-up`,
+      method: "post",
+      data: {
+        'email': user.email,
+        'name': user.name,
+        'password': user.password,
+      }
+    });
+    //console.log(userCreated, "USER CRETAEDD:::::")
+    res.status(201).json({
+      "email": user.email,
+      "name": user.name,
+      "id": userCreated.data.data
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get("*", renderApp)
 

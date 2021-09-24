@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const setFavorite = (payload) => {
   return {
     type: 'SET_FAVORITE',
@@ -23,6 +25,27 @@ const signIn = (payload, history) => {
     history,
   };
 };
+const signInPreviusly = (payload, history)=>{
+  return (dispatch)=>{
+    axios({
+      url: "/auth/sign-in",
+      method: "post",
+      auth: {
+        username: payload.email,
+        password: payload.password
+      }
+    }).then(({data})=>{
+      //login Succesfully
+      document.cookie = `email=${data.user.email}`
+      document.cookie = `name=${data.user.name}`
+      document.cookie = `id=${data.user.id}`
+      dispatch(data.user, history)
+    })
+    .catch(error=>{
+      
+    })
+  }
+}
 const signOut = (payload) => {
   return {
     type: 'SIGN_OUT',
@@ -35,4 +58,5 @@ module.exports = {
   signUp,
   signIn,
   signOut,
+  signInPreviusly
 };
