@@ -6,10 +6,10 @@ import '../assets/styles/components/Login.scss';
 import googleIcon from '../assets/static/google-icon.png';
 import twitterIcon from '../assets/static/twitter-icon.png';
 import Footer from '../components/Footer';
-import { signIn } from '../actions';
+import { signInPreviusly } from '../actions';
 import formValidate from '../utils/formValidate';
 
-const Login = ({ signIn, history, user }) => {
+const Login = ({ signInPreviusly, history, user }) => {
   const [form, setform] = useState({ email: '', password: '' });
   const handleInput = (e) => {
     setform({
@@ -22,7 +22,7 @@ const Login = ({ signIn, history, user }) => {
     e.preventDefault();
     formValidate(form, (err, isData)=>{
       if(isData){
-        signIn(isData, history);
+        signInPreviusly(isData, history);
         return true
       }
       window.alert(err.message)
@@ -83,6 +83,4 @@ const Login = ({ signIn, history, user }) => {
   );
 };
 
-export default connect((state) => ({ user: state.user.login }), { signIn })(
-  Login
-);
+export default connect(null, {signInPreviusly})(Login)

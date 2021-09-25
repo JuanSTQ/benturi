@@ -18,15 +18,10 @@ const reducer = function (state, action) {
         user: { ...state.user, register: action.payload },
       };
     case 'LOGIN_USER':
-      action.history.push('/');
-      return {
-        ...state,
-        user: action.payload
-      };
     case 'SIGN_OUT':
       return {
         ...state,
-        user: { login: '', register: '' },
+        user: {},
       };
     default:
       return state;

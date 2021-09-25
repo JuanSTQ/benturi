@@ -15,7 +15,13 @@ const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
   }, []);
   const handleOnClick = (e) => {
     signOut({});
+    document.cookie = "email="
+    document.cookie = "name="
+    document.cookie = "id="
+    document.cookie = "token="
+    window.location.href = '/login'
   };
+
   return (
     <>
       <header className="header">
@@ -25,6 +31,7 @@ const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
         <div className="header__menu">
           <div className="header__menu--profile">
             <img
+              id="user-icon"
               src={user.email ? gravatar(user.email) : userIcon}
               alt="Usuario"
             />

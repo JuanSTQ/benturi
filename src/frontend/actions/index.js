@@ -1,31 +1,31 @@
 import axios from 'axios'
 
-const setFavorite = (payload) => {
+export const setFavorite = (payload) => {
   return {
     type: 'SET_FAVORITE',
     payload,
   };
 };
-const deleteFavorite = (payload) => {
+export const deleteFavorite = (payload) => {
   return {
     type: 'DELETE_FAVORITE',
     payload,
   };
 };
-const signUp = (payload) => {
+export const signUp = (payload) => {
   return {
     type: 'CREATE_USER',
     payload,
   };
 };
-const signIn = (payload, history) => {
+export const signIn = (payload, history) => {
   return {
     type: 'LOGIN_USER',
     payload,
     history,
   };
 };
-const signInPreviusly = (payload, history)=>{
+export const signInPreviusly = (payload, history)=>{
   return (dispatch)=>{
     axios({
       url: "/auth/sign-in",
@@ -39,24 +39,18 @@ const signInPreviusly = (payload, history)=>{
       document.cookie = `email=${data.user.email}`
       document.cookie = `name=${data.user.name}`
       document.cookie = `id=${data.user.id}`
-      dispatch(data.user, history)
+      history.push('/')
+      dispatch(signIn(data.user, history))
     })
     .catch(error=>{
       
     })
   }
 }
-const signOut = (payload) => {
+export const signOut = (payload) => {
   return {
     type: 'SIGN_OUT',
     payload,
   };
 };
-module.exports = {
-  setFavorite,
-  deleteFavorite,
-  signUp,
-  signIn,
-  signOut,
-  signInPreviusly
-};
+

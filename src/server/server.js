@@ -11,10 +11,14 @@ import { Provider } from 'react-redux'
 import serverRoutes from '../frontend/routes/serverRoutes'
 import helmet from 'helmet'
 import axios from 'axios'
-
+import passport from 'passport'
+import boom from '@hapi/boom'
 const app = express()
 const dotenv = require("dotenv").config()
+import cookieParser from 'cookie-parser'
+require('./utils/basic')
 
+app.use(cookieParser())
 
 if(process.env.MODE ==="development"){
   console.log('::::::CONFIGURACION DE DESARROLLO::::::')
@@ -65,27 +69,52 @@ const setResponse = (html, preloadedState, manifest) => {
 
 const renderApp = async (req,res,next)=>{
   const initialState = {
-    user: {email:"", name:"", id:""},
+   // user: {email:"", name:"", id:""},
+    user: "",
     myList: [],
     trends: [],
     originals:[]
   }
-  
-  let arr = await axios({
-    url:`${process.env.API_URL}/api/movies/`,
-    method: "get",
-  })
-  arr = arr.data
-  initialState.originals = arr.filter(({contentRating})=>{
-    return ["G", "NC-17", "R"].includes(contentRating)
-  })
-  initialState.trends = arr.filter(({contentRating})=>{
-    return ["PG", "PG-13"].includes(contentRating)
-  })
-  if(initialState.user.email){
-    console.log("ESTA DEFINIDA")
+  try {
+    let arr = await axios({
+      url:`${process.env.API_URL}/api/movies/`,
+      method: "get",
+    })
+    arr = arr.data
+    initialState.originals = arr.filter(({contentRating})=>{
+      return ["G", "NC-17", "R"].includes(contentRating)
+    })
+    initialState.trends = arr.filter(({contentRating})=>{
+      return ["PG", "PG-13"].includes(contentRating)
+    })
+    if(req.cookies.name && req.cookies.email){
+      const {name, token, email, id} = req.cookies
+      initialState.user = {
+        name: name,
+        email: email
+      }
+
+      let arr = await axios({
+        url: `${process.env.API_URL}/api/usermovies/?userId=${id}`,
+        method: "get",
+        headers: {Authorization: `Bearer ${token}`},
+      })
+      arr = arr.data
+      let arrMyList = await Promise.all(arr.map(async ({movieId})=>{
+        const movie = await axios({
+          url: `http://localhost:3000/api/movies/${movieId}`,
+          method: "get"
+        })
+        return movie.data
+      }))
+
+      initialState.myList = arrMyList
+    }
+    
+  } catch (error) {
+    next(error)
   }
-  console.log("NO ESTA DEFINIDA")
+
   const store = createStore(reducer, initialState)
   const preloadedState = store.getState();
   const html = renderToString(
@@ -96,7 +125,7 @@ const renderApp = async (req,res,next)=>{
     </Provider>
   )
   //res.set("Content-Security-Policy", "default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'")
-  res.set("Content-Security-Policy", "img-src 'self' http://dummyimage.com; media-src *; style-src-elem 'self' https://fonts.googleapis.com;")
+  res.set("Content-Security-Policy", "img-src 'self' http://dummyimage.com https://gravatar.com; media-src *; style-src-elem 'self' https://fonts.googleapis.com;")
   res.send(setResponse(html, preloadedState, req.hashManifest)); //HTML es el prerenderizado
 }
 
@@ -107,7 +136,8 @@ app.post("/auth/sign-in", async function(req, res, next) {
       if (error || !data) {
         next(boom.unauthorized());
       }
-
+      console.log(data, "LOGIN")
+      
       req.login(data, { session: false }, async function(err) {
         if (err) {
           next(err);
@@ -129,6 +159,7 @@ app.post("/auth/sign-in", async function(req, res, next) {
 });
 
 app.post("/auth/sign-up", async function(req, res, next) {
+  
   const { body: user } = req;
   //console.log('PETICION ENCONTRADA', `${process.env.API_URL}`, user)
   try {
