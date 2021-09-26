@@ -15,21 +15,21 @@ const Home = ({ myList, trends, originals }) => {
       <Categories title="My favorites">
         <Carousel>
           {myList.map((item) => (
-            <CarouselItem key={item.id} {...item} isList={true} />
+            <CarouselItem key={item._id} {...item} isList={true} />
           ))}
         </Carousel>
       </Categories>
       <Categories title="Trends">
         <Carousel>
           {trends.map((item) => (
-            <CarouselItem key={item.id} {...item} />
+            <CarouselItem key={item._id} {...item} />
           ))}
         </Carousel>
       </Categories>
       <Categories title="Originals">
         <Carousel>
           {originals.map((item) => (
-            <CarouselItem key={item.id} {...item} />
+            <CarouselItem key={item._id} {...item} />
           ))}
         </Carousel>
       </Categories>

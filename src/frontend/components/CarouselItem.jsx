@@ -5,27 +5,35 @@ import playIcon from '../assets/static/play-icon.png';
 import plusIcon from '../assets/static/plus-icon.png';
 import removeIcon from '../assets/static/remove-icon.png';
 import '../assets/styles/components/CarouselItem.scss';
-import { setFavorite, deleteFavorite } from '../actions/index';
+import { setFavoritePreviusly, deleteFavoritePreviusly } from '../actions/index';
 
 const CarouselItem = ({
-  id,
+  _id,
   cover,
   year,
   contentRating,
   duration,
   title,
   isList,
-  setFavorite,
-  deleteFavorite,
+  setFavoritePreviusly,
+  deleteFavoritePreviusly,
+  userId,
+  userMovie,
+  myList
 }) => {
   const handleSetFavorite = (e) => {
-    setFavorite({ movie: { id, cover, year, contentRating, duration, title } });
-    const image = document.getElementById(id);
+    const image = document.getElementById(_id);
     image.style.display = 'none';
+    const v = myList.some(({_id:idMovie})=>idMovie===_id)
+    if(v){
+      setFavoritePreviusly({ movie: { _id, cover, year, contentRating, duration, title }, userId, isExist:true});
+      return true
+    }      
+    setFavoritePreviusly({ movie: { _id, cover, year, contentRating, duration, title }, userId, isExist: false});
   };
   const handleDeleteFavorite = () => {
-    deleteFavorite({ id });
-    const image = document.getElementById(id);
+    const image = document.getElementById(_id);
+    deleteFavoritePreviusly({ _id, userMovieId: userMovie });
     image.style.display = 'inline-block';
   };
   return (
@@ -33,7 +41,7 @@ const CarouselItem = ({
       <img className="carousel-item__img" src={cover} alt={title} />
       <div className="carousel-item__details">
         <div>
-          <Link to={`/player/${id}`}>
+          <Link to={`/player/`}>
             <img
               className="carousel-item__details--img"
               src={playIcon}
@@ -49,7 +57,7 @@ const CarouselItem = ({
             />
           ) : (
             <img
-              id={id}
+              id={_id}
               onClick={handleSetFavorite}
               src={plusIcon}
               alt=""
@@ -66,7 +74,7 @@ const CarouselItem = ({
   );
 };
 
-export default connect(null, {
-  setFavorite,
-  deleteFavorite,
+export default connect(({user, myList})=>({userId:user.id, myList}), {
+  setFavoritePreviusly,
+  deleteFavoritePreviusly,
 })(CarouselItem);

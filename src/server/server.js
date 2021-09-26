@@ -19,7 +19,7 @@ import cookieParser from 'cookie-parser'
 require('./utils/basic')
 
 app.use(cookieParser())
-
+app.use(express.json())
 if(process.env.MODE ==="development"){
   console.log('::::::CONFIGURACION DE DESARROLLO::::::')
   const webPackConfig = require('../../webpack.config');
@@ -87,11 +87,14 @@ const renderApp = async (req,res,next)=>{
     initialState.trends = arr.filter(({contentRating})=>{
       return ["PG", "PG-13"].includes(contentRating)
     })
+
     if(req.cookies.name && req.cookies.email){
       const {name, token, email, id} = req.cookies
       initialState.user = {
         name: name,
-        email: email
+        email: email,
+        id,
+        token
       }
 
       let arr = await axios({
@@ -100,11 +103,12 @@ const renderApp = async (req,res,next)=>{
         headers: {Authorization: `Bearer ${token}`},
       })
       arr = arr.data
-      let arrMyList = await Promise.all(arr.map(async ({movieId})=>{
+      let arrMyList = await Promise.all(arr.map(async ({movieId, _id})=>{
         const movie = await axios({
           url: `http://localhost:3000/api/movies/${movieId}`,
           method: "get"
         })
+        movie.data.userMovie = _id
         return movie.data
       }))
 
@@ -114,7 +118,7 @@ const renderApp = async (req,res,next)=>{
   } catch (error) {
     next(error)
   }
-
+  console.log('render to string')
   const store = createStore(reducer, initialState)
   const preloadedState = store.getState();
   const html = renderToString(
@@ -182,6 +186,40 @@ app.post("/auth/sign-up", async function(req, res, next) {
     next(error);
   }
 });
+app.post('/api/usermovies', async (req,res,next)=>{
+  const {body: userMovie} = req
+  console.log(userMovie)
+  try {
+    let data = await axios({
+      url:`${process.env.API_URL}/api/usermovies`,
+      method: "post",
+      data: userMovie,
+      headers: {Authorization: `Bearer ${req.cookies.token}`},
+    })
+    data = data.data
+    console.log(data.id, "Movie Fav add in the server Public")
+    res.status(201).json({id:data.id})
+    
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.delete('/api/usermovies/:id', async (req,res,next)=>{
+  try {
+    const data = await axios({
+      url: `${process.env.API_URL}/api/usermovies/${req.params.id}`,
+      method: 'delete',
+      headers: {Authorization: `Bearer ${req.cookies.token}`},
+      params: req.params
+    })
+    const id = data.data.id
+    console.log(id, "Movie Fav deleted in server Public")
+    res.status(200).json({id})
+  } catch (error) {
+    next(error)
+  }
+})
 
 app.get("*", renderApp)
 

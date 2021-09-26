@@ -22,7 +22,7 @@ const Login = ({ signInPreviusly, history, user }) => {
     e.preventDefault();
     formValidate(form, (err, isData)=>{
       if(isData){
-        signInPreviusly(isData, history);
+        signInPreviusly(isData);
         return true
       }
       window.alert(err.message)
