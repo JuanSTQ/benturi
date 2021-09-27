@@ -4,10 +4,10 @@ import '../assets/styles/components/Register.scss';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { signUp } from '../actions';
+import { signUpPreviusly } from '../actions';
 import formValidate from '../utils/formValidate';
 
-const Register = ({ signUp, history }) => {
+const Register = ({ signUpPreviusly, history }) => {
   const [form, setform] = useState({ email: '', password: '', name: '' });
   const handleOnChange = (e) => {
     setform({
@@ -20,8 +20,7 @@ const Register = ({ signUp, history }) => {
     e.preventDefault();
     formValidate(form, (err, isData) => {
       if (isData) {
-        signUp(form);
-        history.push('/login');
+        signUpPreviusly(form, history);
         return true
       }
       window.alert(err.message);
@@ -70,4 +69,4 @@ const Register = ({ signUp, history }) => {
   );
 };
 
-export default connect(null, { signUp })(Register);
+export default connect(null, { signUpPreviusly })(Register);

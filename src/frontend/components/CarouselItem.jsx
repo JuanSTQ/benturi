@@ -19,17 +19,21 @@ const CarouselItem = ({
   deleteFavoritePreviusly,
   userId,
   userMovie,
-  myList
+  myList,
+  history,
 }) => {
   const handleSetFavorite = (e) => {
     const image = document.getElementById(_id);
     image.style.display = 'none';
     const v = myList.some(({_id:idMovie})=>idMovie===_id)
-    if(v){
+    if(v && userId){
       setFavoritePreviusly({ movie: { _id, cover, year, contentRating, duration, title }, userId, isExist:true});
       return true
+    }else if(!userId){
+      history.push('/login')
+    }else{
+      setFavoritePreviusly({ movie: { _id, cover, year, contentRating, duration, title }, userId, isExist: false});
     }      
-    setFavoritePreviusly({ movie: { _id, cover, year, contentRating, duration, title }, userId, isExist: false});
   };
   const handleDeleteFavorite = () => {
     const image = document.getElementById(_id);
@@ -41,7 +45,7 @@ const CarouselItem = ({
       <img className="carousel-item__img" src={cover} alt={title} />
       <div className="carousel-item__details">
         <div>
-          <Link to={`/player/`}>
+          <Link to={`/player/${_id}`}>
             <img
               className="carousel-item__details--img"
               src={playIcon}

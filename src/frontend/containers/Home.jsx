@@ -7,7 +7,7 @@ import Carousel from '../components/Carousel';
 import CarouselItem from '../components/CarouselItem';
 import Footer from '../components/Footer';
 
-const Home = ({ myList, trends, originals }) => {
+const Home = ({ myList, trends, originals, history }) => {
   return (
     <>
       <Header isHome="isHome" />
@@ -15,21 +15,21 @@ const Home = ({ myList, trends, originals }) => {
       <Categories title="My favorites">
         <Carousel>
           {myList.map((item) => (
-            <CarouselItem key={item._id} {...item} isList={true} />
+            <CarouselItem key={item._id} {...item} isList={true} history={history}/>
           ))}
         </Carousel>
       </Categories>
       <Categories title="Trends">
         <Carousel>
           {trends.map((item) => (
-            <CarouselItem key={item._id} {...item} />
+            <CarouselItem key={item._id} {...item} history={history} />
           ))}
         </Carousel>
       </Categories>
       <Categories title="Originals">
         <Carousel>
           {originals.map((item) => (
-            <CarouselItem key={item._id} {...item} />
+            <CarouselItem key={item._id} {...item} history={history}/>
           ))}
         </Carousel>
       </Categories>
@@ -40,8 +40,8 @@ const Home = ({ myList, trends, originals }) => {
 export default connect(
   (state) => ({
     myList: state.myList,
-    trends: state.trends,
-    originals: state.originals,
+    trends: state.searchTrends,
+    originals: state.searchOriginals,
   }),
   null
 )(Home);

@@ -73,7 +73,10 @@ const renderApp = async (req,res,next)=>{
     user: "",
     myList: [],
     trends: [],
-    originals:[]
+    searchTrends:[],
+    originals:[],
+    searchOriginals:[],
+    playing: [],
   }
   try {
     let arr = await axios({
@@ -81,12 +84,16 @@ const renderApp = async (req,res,next)=>{
       method: "get",
     })
     arr = arr.data
-    initialState.originals = arr.filter(({contentRating})=>{
+    const originals = arr.filter(({contentRating})=>{
       return ["G", "NC-17", "R"].includes(contentRating)
     })
-    initialState.trends = arr.filter(({contentRating})=>{
+    initialState.originals = originals
+    initialState.searchOriginals = originals
+    let trends = arr.filter(({contentRating})=>{
       return ["PG", "PG-13"].includes(contentRating)
     })
+    initialState.trends = trends;
+    initialState.searchTrends = trends;
 
     if(req.cookies.name && req.cookies.email){
       const {name, token, email, id} = req.cookies
@@ -105,7 +112,7 @@ const renderApp = async (req,res,next)=>{
       arr = arr.data
       let arrMyList = await Promise.all(arr.map(async ({movieId, _id})=>{
         const movie = await axios({
-          url: `http://localhost:3000/api/movies/${movieId}`,
+          url: `${process.env.API_URL}/api/movies/${movieId}`,
           method: "get"
         })
         movie.data.userMovie = _id
@@ -129,7 +136,7 @@ const renderApp = async (req,res,next)=>{
     </Provider>
   )
   //res.set("Content-Security-Policy", "default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'")
-  res.set("Content-Security-Policy", "img-src 'self' http://dummyimage.com https://gravatar.com; media-src *; style-src-elem 'self' https://fonts.googleapis.com;")
+  res.set("Content-Security-Policy", "img-src 'self' http://dummyimage.com https://gravatar.com http://commondatastorage.googleapis.com; media-src *; style-src-elem 'self' https://fonts.googleapis.com;")
   res.send(setResponse(html, preloadedState, req.hashManifest)); //HTML es el prerenderizado
 }
 
@@ -180,7 +187,7 @@ app.post("/auth/sign-up", async function(req, res, next) {
     res.status(201).json({
       "email": user.email,
       "name": user.name,
-      "id": userCreated.data.data
+      "id": userCreated.data.id
     });
   } catch (error) {
     next(error);
@@ -216,6 +223,21 @@ app.delete('/api/usermovies/:id', async (req,res,next)=>{
     const id = data.data.id
     console.log(id, "Movie Fav deleted in server Public")
     res.status(200).json({id})
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.get("/movie/:id", async (req,res,next)=>{
+  try {
+    console.log(req.params.id)
+    const {data} = await axios({
+      url:`${process.env.API_URL}/api/movies/${req.params.id}`,
+      params: req.params,
+      method:"get"
+    })
+    res.status(200).json(data)
+    
   } catch (error) {
     next(error)
   }

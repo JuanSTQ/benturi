@@ -92,6 +92,24 @@ export const signInPreviusly = (payload, redirectUrl)=>{
     })
   }
 }
+export const signUpPreviusly = (payload, history)=>{
+  return (dispatch)=>{
+    axios({
+      url: "/auth/sign-up",
+      method: "post",
+      data: payload
+    }).then(({data})=>{
+      if(data.id){
+        history.push('/login');
+        delete payload.password 
+        dispatch(signUp(payload))
+      }
+    })
+    .catch(error=>{
+      console.log(error)
+    })
+  }
+}
 export const signOut = (payload) => {
   return {
     type: 'SIGN_OUT',
@@ -99,3 +117,9 @@ export const signOut = (payload) => {
   };
 };
 
+export const searchAction = (payload)=>{
+  return {
+    type: "SEARCH_VIDEO",
+    payload
+  }
+}

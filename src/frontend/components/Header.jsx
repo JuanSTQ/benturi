@@ -19,7 +19,7 @@ const Header = ({ isLogin, isRegister, isHome, user, signOut }) => {
     document.cookie = "name="
     document.cookie = "id="
     document.cookie = "token="
-    window.location.href = '/login'
+    window.location.href = '/'
   };
 
   return (

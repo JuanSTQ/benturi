@@ -1,6 +1,7 @@
 import Home from '../containers/Home';
 //import Player from '../containers/player';
 import Login from '../containers/Login';
+import Player from '../containers/Player';
 import Register from '../containers/Register';
 //import NotFount from '../containers/NotFount';
 const serverRoutes= ()=>{
@@ -11,9 +12,9 @@ const serverRoutes= ()=>{
       component: Home,
     },
     {
-      path: '/player/:id',
+      path: '/player',
       exact: true,
-      component: Login,
+      component: Player,
     },
     {
       path: '/login',

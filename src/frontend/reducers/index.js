@@ -19,10 +19,23 @@ const reducer = function (state, action) {
         user: { ...state.user, register: action.payload },
       };
     case 'LOGIN_USER':
+    case 'SING_UP':
     case 'SIGN_OUT':
       return {
         ...state,
         user: {},
+      };
+    case "SEARCH_VIDEO":
+      return {
+        ...state,
+        searchTrends: state.trends.filter(({title})=>{
+          const searchValue = action.payload.value.toLowerCase();
+          return title.toLowerCase().includes(searchValue)
+        }),
+        searchOriginals: state.originals.filter(({title})=>{
+          const searchValue = action.payload.value.toLowerCase()
+          return title.toLowerCase().includes(searchValue)
+        })
       };
     default:
       return state;
