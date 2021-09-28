@@ -37,6 +37,12 @@ const reducer = function (state, action) {
           return title.toLowerCase().includes(searchValue)
         })
       };
+    case "LOAD_MOVIE":
+      return {
+        ...state,
+        searchOriginals: state.originals,
+        searchTrends: state.trends,
+      };
     default:
       return state;
   }

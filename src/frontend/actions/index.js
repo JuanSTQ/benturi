@@ -29,7 +29,6 @@ export const setFavoritePreviusly =  (payload)=>{
       }).then(({data})=>{
         if(data.id){
           const newPayload = {...payload.movie, userMovie: data.id}
-          console.log(newPayload)
           dispatch(setFavorite(newPayload))
         }
       })
@@ -120,6 +119,13 @@ export const signOut = (payload) => {
 export const searchAction = (payload)=>{
   return {
     type: "SEARCH_VIDEO",
+    payload
+  }
+}
+
+export const loadMovies = (payload)=>{
+  return {
+    type: "LOAD_MOVIE",
     payload
   }
 }

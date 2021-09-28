@@ -147,7 +147,6 @@ app.post("/auth/sign-in", async function(req, res, next) {
       if (error || !data) {
         next(boom.unauthorized());
       }
-      console.log(data, "LOGIN")
       
       req.login(data, { session: false }, async function(err) {
         if (err) {
@@ -195,7 +194,6 @@ app.post("/auth/sign-up", async function(req, res, next) {
 });
 app.post('/api/usermovies', async (req,res,next)=>{
   const {body: userMovie} = req
-  console.log(userMovie)
   try {
     let data = await axios({
       url:`${process.env.API_URL}/api/usermovies`,
@@ -204,7 +202,6 @@ app.post('/api/usermovies', async (req,res,next)=>{
       headers: {Authorization: `Bearer ${req.cookies.token}`},
     })
     data = data.data
-    console.log(data.id, "Movie Fav add in the server Public")
     res.status(201).json({id:data.id})
     
   } catch (error) {
@@ -221,7 +218,6 @@ app.delete('/api/usermovies/:id', async (req,res,next)=>{
       params: req.params
     })
     const id = data.data.id
-    console.log(id, "Movie Fav deleted in server Public")
     res.status(200).json({id})
   } catch (error) {
     next(error)
@@ -230,7 +226,6 @@ app.delete('/api/usermovies/:id', async (req,res,next)=>{
 
 app.get("/movie/:id", async (req,res,next)=>{
   try {
-    console.log(req.params.id)
     const {data} = await axios({
       url:`${process.env.API_URL}/api/movies/${req.params.id}`,
       params: req.params,

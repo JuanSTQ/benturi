@@ -1,8 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { loadMovies } from '../actions'
 import "../assets/styles/components/Player.scss"
-const Player = (props) => {
+
+const Player = ({loadMovies}) => {
   const [src, setSrc] = useState("")
   useEffect(() => {
     axios({
@@ -16,13 +19,16 @@ const Player = (props) => {
       console.log(err)
     })
   }, [])
+  const onHandleClick = ()=>{
+    loadMovies({})
+  }
   return (
     <>
     {
       src ? 
           <div className="video__container">
             <div className="video__navegation">
-              <a href="/"> ← Regresar al Home</a>
+              <Link onClick={onHandleClick} to="/"> ← Regresar al Home</Link>
             </div>
             <video controls>
               <source src={src} type="video/mp4"></source>
@@ -40,4 +46,4 @@ const Player = (props) => {
   )
 }
 
-export default Player
+export default connect(null, {loadMovies})(Player)
